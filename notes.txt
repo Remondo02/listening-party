@@ -1,0 +1,19 @@
+Listening Party Real Time Podcast App
+
+- User need to be able to start a listening Party
+-- Podcast episode
+-- Time to go live
+-- Links to the media file
+
+- Listening Party Starts
+-- Users can chat
+-- Podcast episode plays in real time (played on the server)
+-- Users can react in real time
+-- Show the live listening parties on the dashboard page
+
+Models:
+- Listening Party
+- episode
+- Podcast
+- Reactions
+- Messages
