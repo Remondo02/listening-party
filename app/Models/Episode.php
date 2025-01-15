@@ -13,7 +13,7 @@ class Episode extends Model
 
     protected $guarded = ['id'];
 
-    public function postcasts(): BelongsTo
+    public function podcast(): BelongsTo
     {
         return $this->belongsTo(Podcast::class);
     }
