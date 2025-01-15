@@ -20,20 +20,16 @@ new class extends Component {
         $this->validate();
 
         $episode = Episode::create([
-            'media_url' => $this->medialUrl,
-        ])
+            'media_url' => $this->mediaUrl,
+    ]);
 
         $listeningParty = ListeningParty::create([
             'episode_id' => $episode->id,
             'name' => $this->name,
-            'start_tile' => $this->startTime,
-        ])
+            'start_time' => $this->startTime,
+        ]);
 
-        // First, check that there are not existing episodes with the same URL.
-        // If there is, use that, if not, create a new one.
-        // When a new episode is created, grab information with a background job.
-        // Then use that information to create a new listening party.
-
+        return redirect()->route('parties.show', $listeningParty);
     }
 
     public function with()
