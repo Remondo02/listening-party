@@ -44,9 +44,9 @@ new class extends Component {
     <div class="max-w-lg w-full px-4">
         <form wire:submit="createListeningParty" class="space-y-6">
             <x-input wire:model="name" placeholder="Listening Party Name" />
-            <x-input wire:model="mediaUrl" placeholder="Podcast Episode URL"
-                description="Direct episode link or YouTube link, RSS feeds will grab the latest episode" />
-            <x-datetime-picker wire:model="startTime" placeholder="Listening PartyStart Time" />
+            <x-input wire:model="mediaUrl" placeholder="Podcast RSS Feed URL"
+                description="Entering the RSS feed will grab the latest episode" />
+            <x-datetime-picker wire:model="startTime" placeholder="Listening PartyStart Time" :min="now()->subDays(1)" />
             <x-button type="submit">Create Listening Party</x-button>
         </form>
     </div>
