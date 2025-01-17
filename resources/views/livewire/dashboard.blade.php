@@ -63,7 +63,7 @@ new class extends Component {
     {{-- Bottom half: existing listening parties --}}
     <div class="my-20">
         <div class="max-w-lg mx-auto">
-            <h3 class="mb-8 font-serif font-bold">Ongoing Listening Parties</h3>
+            <h3 class="mb-4 font-serif text-[0.9rem] font-bold">Ongoing Listening Parties</h3>
             <div class="bg-white rounded-lg shadow-lg">
                 @if ($listeningParties->isEmpty())
                     <div>No awwdio listening parties started yet... 😔</div>
