@@ -87,27 +87,8 @@ new class extends Component {
                                                 <p class="text-slate-400 uppercase tracking-tighter text-[0.7rem]">
                                                     {{ $listeningParty->episode->podcast->title }}</p>
                                             </div>
-                                            <div class="text-xs text-slate-600 mt-1" x-data="{
-                                                startTime: '{{ $listeningParty->start_time ? $listeningParty->start_time->toIso8601String() : now()->toIso8601String() }}',
-                                                countdownText: '',
-                                                isLive: {{ $listeningParty->start_time->isPast() && $listeningParty->is_active ? 'true' : 'false' }},
-                                                updateCountdown() {
-                                                    const start = new Date(this.startTime).getTime();
-                                                    const now = new Date().getTime();
-                                                    const distance = start - now;
-                                                    if (distance < 0) {
-                                                        this.countdownText = 'Started';
-                                                    } else {
-                                                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                                                        this.countdownText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                                                    }
-                                                }
-                                            }"
-                                                x-init="updateCountdown();
-                                                setInterval(() => updateCountdown(), 1000);">
+                                            <div class="text-xs text-slate-600 mt-1" x-data="listeningPartyCountdown('{{ $listeningParty->start_time->toIso8601String() }}', {{ $listeningParty->start_time->isPast() && $listeningParty->is_active ? 'true' : 'false' }})"
+                                                x-init="updateCountdown()">
                                                 <div x-show="isLive">
                                                     <x-badge flat rose label="Live">
                                                         <x-slot name="prepend"
