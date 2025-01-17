@@ -82,7 +82,7 @@ new class extends Component {
                                             <p class="text-[0.9rem] font-semibold truncate text-slate-900">
                                                 {{ $listeningParty->name }}</p>
                                             <div class="mt-0.8">
-                                                <p class="text-sm text-slate-600 truncate">
+                                                <p class="text-sm max-w-xs text-slate-600 truncate">
                                                     {{ $listeningParty->episode->title }}</p>
                                                 <p class="text-slate-400 uppercase tracking-tighter text-[0.7rem]">
                                                     {{ $listeningParty->episode->podcast->title }}</p>
