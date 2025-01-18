@@ -5,6 +5,7 @@ export default (startTimestamp) => ({
     isPlaying: false,
     isReady: false,
     currentTime: 0,
+    countdownText: "",
     startTimestamp: startTimestamp,
 
     initializeAudioPlayer() {
@@ -16,7 +17,7 @@ export default (startTimestamp) => ({
 
         this.audio.addEventListener("loadedmetadata", () => {
             this.isLoading = false;
-            this.checkAndPlayAudio();
+            this.checkAndUpdate();
         });
 
         this.audio.addEventListener("timeupdate", () => {
@@ -25,6 +26,7 @@ export default (startTimestamp) => ({
 
         this.audio.addEventListener("play", () => {
             this.isPlaying = true;
+            this.isReady = true;
         });
 
         this.audio.addEventListener("pause", () => {
@@ -37,39 +39,36 @@ export default (startTimestamp) => ({
         const timeUntilStart = this.startTimestamp - now;
 
         if (timeUntilStart <= 0) {
+            this.isLive = true;
             if (!this.isPlaying) {
                 this.isLive = true;
-                if (this.isReady) {
-                    this.audio
-                        .play()
-                        .catch((error) =>
-                            console.error("Playback failed:", error)
-                        );
-                }
+                this.playAudio();
             }
         } else {
             const days = Math.floor(timeUntilStart / 86400);
             const hours = Math.floor((timeUntilStart % 86400) / 3600);
             const minutes = Math.floor((timeUntilStart % 3600) / 60);
             const seconds = timeUntilStart % 60;
-
             this.countdownText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            setTimeout(() => this.checkAndUpdate(), 1000);
         }
     },
 
-    checkAndPlayAudio() {
-        const elapsedTime = Math.max(
-            0,
-            Math.floor(Date.now() / 1000) - this.startTimestamp
-        );
+    playAudio() {
+        const now = Math.floor(Date.now() / 1000);
+        const elapsedTime = Math.max(0, now - this.startTimestamp);
+        this.audio.currentTime = elapsedTime;
+        this.audio.play().catch((error) => {
+            console.error("Playback failed:", error);
+            this.isPlaying = false;
+            this.isReady = false;
+        });
+    },
 
-        if (elapsedTime >= 0) {
-            this.audio.currentTime = elapsedTime;
-            this.audio
-                .play()
-                .catch((error) => console.error("Playback failed:", error));
-        } else {
-            setTimeout(() => this.checkAndPlayAudio(), 1000);
+    joinAndBeReady() {
+        this.isReady = true;
+        if (this.isLive) {
+            this.playAudio();
         }
     },
 
