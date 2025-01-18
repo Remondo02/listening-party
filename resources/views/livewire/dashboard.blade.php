@@ -70,6 +70,7 @@ new class extends Component {
                         started yet... 😔</div>
                 @else
                     @foreach ($listeningParties as $listeningParty)
+
                         <div wire:key="{{ $listeningParty->id }}">
                             <a href="{{ route('parties.show', $listeningParty) }}" class="block">
                                 <div
@@ -88,7 +89,7 @@ new class extends Component {
                                                 <p class="text-slate-400 uppercase tracking-tighter text-[0.7rem]">
                                                     {{ $listeningParty->episode->podcast->title }}</p>
                                             </div>
-                                            <div class="text-xs text-slate-600 mt-1" x-data="listeningPartyCountdown('{{ $listeningParty->start_time->toIso8601String() }}', {{ $listeningParty->start_time->isPast() && $listeningParty->is_active ? 'true' : 'false' }})"
+                                            <div class="text-xs text-slate-600 mt-1" x-data="listeningPartyCountdown('{{ $listeningParty->start_time->timestamp }}', {{ $listeningParty->start_time->isPast() && $listeningParty->is_active ? 'true' : 'false' }})"
                                                 x-init="updateCountdown()">
                                                 <div x-show="isLive">
                                                     <x-badge flat rose label="Live">

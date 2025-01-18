@@ -12,13 +12,13 @@ new class extends Component {
     }
 }; ?>
 
-<div>
+<div x-data="listeningPartyPlayer({{ $listeningParty->start_time->timestamp }})" x-init="$nextTick(() => initializeAudioPlayer())">
     @if ($listeningParty->end_time === null)
         <div class="flex items-center justify-center p-6 font-serif text-sm" wire:poll.5s>
             Creating your <span class="font-bold">{{ $listeningParty->name }}</span>
         </div>
     @else
-        <div x-data="listeningPartyPlayer({{ $listeningParty->start_time->timestamp }})" x-init="initializeAudioPlayer()">
+        <div>
             <audio x-ref="audioPlayer" :src="'{{ $listeningParty->episode->media_url }}'" preload="auto"></audio>
             <div>{{ $listeningParty->episode->podcast->title }}</div>
             <div>{{ $listeningParty->episode->title }}</div>
@@ -27,5 +27,4 @@ new class extends Component {
             <div x-show="isLoading">Loading...</div>
         </div>
     @endif
-
 </div>
