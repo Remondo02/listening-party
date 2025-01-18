@@ -14,11 +14,11 @@ new class extends Component {
 
 <div>
     @if ($listeningParty->end_time === null)
-        <div class="flex items-center justify-center p-6 font-serif text-sm">
+        <div class="flex items-center justify-center p-6 font-serif text-sm" wire:poll.5s>
             Creating your <span class="font-bold">{{ $listeningParty->name }}</span>
         </div>
     @else
-        <div x-data="listeningPartyPlayer({{ $listeningParty->start_time->timestamp }})" x-init="initializeAudioPlayer">
+        <div x-data="listeningPartyPlayer({{ $listeningParty->start_time->timestamp }})" x-init="initializeAudioPlayer()">
             <audio x-ref="audioPlayer" :src="'{{ $listeningParty->episode->media_url }}'" preload="auto"></audio>
             <div>{{ $listeningParty->episode->podcast->title }}</div>
             <div>{{ $listeningParty->episode->title }}</div>
