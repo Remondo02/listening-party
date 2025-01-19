@@ -4,12 +4,22 @@ export default ({ start, end, wire }) => ({
     isLive: false,
     isPlaying: false,
     isReady: false,
+    audioMetadataLoaded: false,
     currentTime: 0,
     countdownText: "",
     startTimestamp: start,
     endTimestamp: end,
     $wire: wire,
     copyNotification: false,
+    emojis: [],
+
+    addEmoji(emoji, x, y) {
+        const id = Date.now();
+        this.emojis.push({ id, emoji, x, y });
+        setTimeout(() => {
+            this.emojis = this.emojis.filter((e) => e.id !== id);
+        }, 1000);
+    },
 
     init() {
         this.startCountdown();
@@ -29,6 +39,7 @@ export default ({ start, end, wire }) => ({
 
             this.audio.addEventListener("loadedmetadata", () => {
                 this.isLoading = false;
+                this.audioMetadataLoaded = true;
                 this.checkLiveStatus();
             });
 
