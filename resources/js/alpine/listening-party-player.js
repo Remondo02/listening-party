@@ -1,4 +1,4 @@
-export default ({ start, end, wire }) => ({
+export default ({ start, end, wire, emojis }) => ({
     audio: null,
     isLoading: true,
     isLive: false,
@@ -11,14 +11,17 @@ export default ({ start, end, wire }) => ({
     endTimestamp: end,
     $wire: wire,
     copyNotification: false,
-    emojis: [],
+    emojis: emojis,
 
-    addEmoji(emoji, x, y) {
-        const id = Date.now();
-        this.emojis.push({ id, emoji, x, y });
-        setTimeout(() => {
-            this.emojis = this.emojis.filter((e) => e.id !== id);
-        }, 1000);
+    addEmoji(emoji, event) {
+        const newEmoji = {
+            id: Date.now(),
+            emoji: emoji,
+            x: event.clientX,
+            y: event.clientY,
+        };
+        this.emojis.push(newEmoji);
+        this.$wire.sendEmoji(emoji);
     },
 
     init() {

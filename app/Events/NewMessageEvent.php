@@ -14,25 +14,15 @@ class NewMessageEvent implements ShouldBroadcastNow
     public $listeningPartyId;
     public $message;
 
-    /**
-     * Create a new event instance.
-     */
     public function __construct($listeningPartyId, $message)
     {
         $this->listeningPartyId = $listeningPartyId;
         $this->message          = $message;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new Channel('listening-party.' . $this->listeningPartyId),
-        ];
+        return new Channel('listening-party.' . $this->listeningPartyId);
     }
 
     public function broadcastAs()

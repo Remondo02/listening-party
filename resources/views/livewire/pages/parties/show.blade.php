@@ -4,10 +4,18 @@ use Livewire\Volt\Component;
 use App\Models\ListeningParty;
 use Livewire\Attributes\Validate;
 use App\Events\NewMessageEvent;
+use App\Events\EmojiReactionEvent;
 use App\Models\Message;
+use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\On;
 
 new class extends Component {
     public ListeningParty $listeningParty;
+
+    public $userId;
+
+    public $emojis = [];
+
     public $isFinished = false;
 
     #[Validate('required|string|max:255')]
@@ -17,6 +25,26 @@ new class extends Component {
     {
         session()->put('auth_redirect', route('parties.show', $this->listeningParty));
         return redirect()->route('register');
+    }
+
+    public function sendEmoji($emoji)
+    {
+        $newEmoji = [
+            'id' => uniqid(),
+            'emoji' => $emoji,
+            'x' => rand(100, 300),
+            'y' => rand(100, 300),
+        ];
+
+        event(new EmojiReactionEvent($this->listeningParty->id, $newEmoji, $this->userId));
+    }
+
+    #[On('echo:listening-party.{listeningParty.id},.emoji-reaction')]
+    public function receiveEmoji($payload)
+    {
+        if ($payload['userId'] !== $this->userId) {
+            $this->emojis[] = $payload['emoji'];
+        }
     }
 
     public function sendMessage()
@@ -46,6 +74,17 @@ new class extends Component {
             $this->isFinished = true;
         }
 
+        if (!auth()->check()) {
+            if (!Session::has('user_id')) {
+                $this->userId = uniqid('user_', true);
+                Session::put('user_id', $this->userId);
+            } else {
+                $this->userId = Session::get('user_id');
+            }
+        } else {
+            $this->userId = auth()->user()->id;
+        }
+
         $this->listeningParty->load('episode.podcast', 'messages.user');
     }
 
@@ -57,7 +96,7 @@ new class extends Component {
     }
 }; ?>
 
-<div x-data="listeningPartyPlayer({ start: {{ $listeningParty->start_time->timestamp }}, end: {{ $listeningParty->end_time ? $listeningParty->end_time->timestamp : 'null' }}, wire: $wire })" x-init="init()">
+<div x-data="listeningPartyPlayer({ start: {{ $listeningParty->start_time->timestamp }}, end: {{ $listeningParty->end_time ? $listeningParty->end_time->timestamp : 'null' }}, wire: $wire, emojis: @entangle('emojis') })" x-init="init()">
     @if ($listeningParty->end_time === null)
         <div class="flex items-center justify-center min-h-screen bg-emerald-50" wire:poll.5s>
             <div class="w-full max-w-2xl p-8 mx-8 bg-white rounded-lg shadow-lg">
@@ -195,7 +234,7 @@ new class extends Component {
                         <div class="p-4 bg-white rounded-lg shadow-lg">
                             <div class="grid grid-cols-6 gap-2">
                                 @foreach (['👍', '❤️', '😂', '😮', '😢', '😡'] as $emoji)
-                                    <button @click="addEmoji('{{ $emoji }}', $event.clientX, $event.clientY)"
+                                    <button @click="addEmoji('{{ $emoji }}', $event)"
                                         class="p-2 text-2xl transition-colors rounded-full hover:bg-emerald-100">
                                         {{ $emoji }}
                                     </button>
